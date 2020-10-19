@@ -51,6 +51,74 @@ public class PathFinder {
 		return result;
 	}
 
+	public Point[] fieldOfConnectivityFinder(final Point start) {
+
+		Point[] result = new Point[this.arr.length * this.arr.length];
+
+		start.setNumberInPath(0);
+
+		int i = 0;
+		int k = 1;
+		result[i] = start;
+
+		while (k < result.length && i != k) {
+			for (int dotsAroundIIterator = 0; dotsAroundIIterator < 4; dotsAroundIIterator++) {
+				Point tmp = isAGoodDotForFieldOfConnectivity(result[i], dotsAroundIIterator);
+				if (tmp != null) {
+					result[k] = tmp;
+					result[k].setNumberInPath(result[i].getNumberInPath() + 1);
+					result[k].setPrevPointInQueue(result[i]);
+					k++;
+				}
+				}
+			i++;
+		}
+		setToDefaultNumbersInPathAndPrevPoints(result);
+		return result;
+	}
+
+	private Point isAGoodDotForFieldOfConnectivity(final Point point, final int dotsAround) {
+		Point result;
+
+		if (dotsAround == 0) {
+			if (point.getY() != 0) {
+				result = this.getPoint(point.getY() - 1, point.getX());
+				if (result.getNumberInPath() == -1 && result.getName() == '.') {
+					return result;
+				}
+				return null;
+			}
+		}
+		else if (dotsAround == 1) {
+			if (point.getX() != this.arr.length - 1) {
+				result = this.getPoint(point.getY(), point.getX() + 1);
+				if (result.getNumberInPath() == -1 && result.getName() == '.') {
+					return result;
+				}
+				return null;
+			}
+		}
+		else if (dotsAround == 2) {
+			if (point.getY() != this.arr.length - 1) {
+				result = this.getPoint(point.getY() + 1, point.getX());
+				if (result.getNumberInPath() == -1 && result.getName() == '.') {
+					return result;
+				}
+				return null;
+			}
+		}
+		else if (dotsAround == 3) {
+			if (point.getX() != 0) {
+				result = this.getPoint(point.getY(), point.getX() - 1);
+				if (result.getNumberInPath() == -1 && result.getName() == '.') {
+					return result;
+				}
+				return null;
+			}
+		}
+		return null;
+	}
+
 	public Point getPoint(final int y, final int x) {
 		return this.arr[y][x];
 	}
